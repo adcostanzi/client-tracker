@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { jobService } from "../services";
-import { Job } from "../models/Job";
+import { NotFoundError } from "../errors/NotFoundError";
 
 const router = Router();
 
@@ -20,16 +20,16 @@ router.get("/:id", async (req, res) => {
   return res.json(job);
 });
 
-router.get("client/:id", async (req, res) => {
+router.get("/client/:id", async (req, res) => {
   const clientId = Number(req.params.id);
-  const job = await jobService.getJobByClientId(clientId);
-  return res.json(job);
+  const jobs = await jobService.getJobByClientId(clientId);
+  return res.json(jobs);
 });
 
 router.post("/", async (req, res) => {
-  const { clientId, description, amount, paidAmount } = req.body;
-
   try {
+    const { clientId, description, amount, paidAmount } = req.body;
+
     const job = await jobService.createJob(
       clientId,
       description,
@@ -38,30 +38,30 @@ router.post("/", async (req, res) => {
     );
     return res.status(200).json(job);
   } catch (error) {
-    return res.status(500).json({ message: error });
+    if (error instanceof Error) {
+      return res.status(500).json({ message: error.message });
+    }
+    return res.status(500).json({ message: "Something went wrong" });
   }
 });
 
 router.patch("/:id", async (req, res) => {
-  const { clientId, description, amount, paidAmount } = req.body;
-  const jobId = Number(req.params.id);
-
   try {
+    const { clientId, description, amount, paidAmount } = req.body;
+    const jobId = Number(req.params.id);
+
     const updatedJob = await jobService.updateJob(jobId, {
       clientId,
       description,
       amount,
       paidAmount,
     });
-    if (!updatedJob) {
-      return res
-        .status(404)
-        .json({ message: "Missing Job. Unable to update job" });
-    }
-
-    return res.status(200).json(updatedJob);
+    res.json(updatedJob);
   } catch (error) {
-    return res.status(500).json({ message: error });
+    if (error instanceof NotFoundError) {
+      return res.status(404).json({ message: error.message });
+    }
+    return res.status(500).json({ message: "Something went wrong" });
   }
 });
 
@@ -79,7 +79,10 @@ router.delete("/:id", async (req, res) => {
         .json({ message: "Job does not exist! Unable to delete it" });
     }
   } catch (error) {
-    return res.status(500).json({ message: error });
+    if (error instanceof NotFoundError) {
+      return res.status(404).json({ message: error.message });
+    }
+    return res.status(500).json({ message: "Something went wrong" });
   }
 });
 

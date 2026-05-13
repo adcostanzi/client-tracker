@@ -1,6 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.JobService = void 0;
+const _1 = require(".");
+const NotFoundError_1 = require("../errors/NotFoundError");
 class JobService {
     jobs = [];
     nextId = 1;
@@ -14,6 +16,10 @@ class JobService {
         return this.jobs.filter((job) => job.clientId == clientId);
     }
     async createJob(clientId, description, amount, paidAmount) {
+        const client = await _1.clientService.getClientById(clientId);
+        if (!client) {
+            throw new Error("Client not found");
+        }
         const newJob = {
             id: this.nextId++,
             clientId,
@@ -29,6 +35,38 @@ class JobService {
         const originalJobsLength = this.jobs.length;
         this.jobs = this.jobs.filter((job) => job.id !== id);
         return this.jobs.length < originalJobsLength;
+    }
+    async updateJob(id, updates) {
+        const job = this.jobs.find((job) => job.id === id);
+        if (!job) {
+            throw new NotFoundError_1.NotFoundError("Job not found");
+        }
+        if (updates.clientId !== undefined) {
+            const client = await _1.clientService.getClientById(updates.clientId);
+            if (!client) {
+                throw new Error("Client not found");
+            }
+            job.clientId = updates.clientId;
+        }
+        if (updates.description !== undefined) {
+            job.description = updates.description;
+        }
+        if (updates.amount !== undefined) {
+            job.amount = updates.amount;
+        }
+        if (updates.paidAmount !== undefined) {
+            job.paidAmount = updates.paidAmount;
+        }
+        await this.calculateJobStatus(job);
+        return job;
+    }
+    async calculateJobStatus(job) {
+        if (job.paidAmount >= job.amount) {
+            job.status = "paid";
+        }
+        else {
+            job.status = "pending";
+        }
     }
 }
 exports.JobService = JobService;

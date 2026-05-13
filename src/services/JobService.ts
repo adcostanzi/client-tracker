@@ -1,6 +1,6 @@
 import { clientService } from ".";
 import { Job } from "../models/Job";
-import { JobStatus } from "../models/JobStatus";
+import { NotFoundError } from "../errors/NotFoundError";
 
 export class JobService {
   private jobs: Job[] = [];
@@ -24,6 +24,11 @@ export class JobService {
     amount: number,
     paidAmount: number,
   ): Promise<Job> {
+    const client = await clientService.getClientById(clientId);
+
+    if (!client) {
+      throw new Error("Client not found");
+    }
     const newJob: Job = {
       id: this.nextId++,
       clientId,
@@ -53,23 +58,21 @@ export class JobService {
       amount?: number;
       paidAmount?: number;
     },
-  ): Promise<Job | undefined> {
-    const job = this.jobs.find((job) => job.id == id);
+  ): Promise<Job> {
+    const job = this.jobs.find((job) => job.id === id);
 
     if (!job) {
-      return undefined;
+      throw new NotFoundError("Job not found");
     }
 
     if (updates.clientId !== undefined) {
-      try {
-        const client = await clientService.getClientById(updates.clientId);
-        if (!client) {
-          return undefined;
-        }
-        job.clientId = updates.clientId;
-      } catch (error) {
-        return undefined;
+      const client = await clientService.getClientById(updates.clientId);
+
+      if (!client) {
+        throw new Error("Client not found");
       }
+
+      job.clientId = updates.clientId;
     }
     if (updates.description !== undefined) {
       job.description = updates.description;
