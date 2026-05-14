@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.JobService = void 0;
 const _1 = require(".");
 const NotFoundError_1 = require("../errors/NotFoundError");
+const calculateTotalOwed_1 = require("../utils/calculateTotalOwed");
 class JobService {
     jobs = [];
     nextId = 1;
@@ -12,7 +13,7 @@ class JobService {
     async getJobById(id) {
         return this.jobs.find((job) => job.id == id);
     }
-    async getJobByClientId(clientId) {
+    async getJobsByClientId(clientId) {
         return this.jobs.filter((job) => job.clientId == clientId);
     }
     async createJob(clientId, description, amount, paidAmount) {
@@ -67,6 +68,13 @@ class JobService {
         else {
             job.status = "pending";
         }
+    }
+    async calculateClientOwes(clientId) {
+        const jobs = await this.getJobsByClientId(clientId);
+        if (jobs.length === 0) {
+            throw new Error("Client not found or does not have any jobs assigned");
+        }
+        return (0, calculateTotalOwed_1.calculateTotalOwed)(jobs);
     }
 }
 exports.JobService = JobService;

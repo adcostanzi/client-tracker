@@ -21,6 +21,8 @@ For live testing I will be using Postman
 - [Official Documentation](https://www.typescriptlang.org/docs/)
 - [Express documentation](https://expressjs.com/)
 - [TS Code Conventions](https://www.totaltypescript.com/tips/how-to-name-your-types)
+- [Error handling](https://www.w3schools.com/typescript/typescript_error_handling.php)
+- [Recursion](https://codesignal.com/learn/courses/easy-interview-coding-practice-in-typescript/lessons/simple-recursion-in-typescript)
 
 # Future Work
 

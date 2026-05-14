@@ -18,8 +18,24 @@ router.get("/:id", async (req, res) => {
 });
 router.get("/client/:id", async (req, res) => {
     const clientId = Number(req.params.id);
-    const jobs = await services_1.jobService.getJobByClientId(clientId);
+    const jobs = await services_1.jobService.getJobsByClientId(clientId);
     return res.json(jobs);
+});
+router.get("/client/:id/balance", async (req, res) => {
+    try {
+        const clientId = Number(req.params.id);
+        const totalOwed = await services_1.jobService.calculateClientOwes(clientId);
+        return res.status(200).json({
+            clientId: `${clientId}`,
+            totalOwed: `${totalOwed}`,
+        });
+    }
+    catch (error) {
+        if (error instanceof Error) {
+            return res.status(404).json({ message: error.message });
+        }
+        return res.status(500).json({ message: "Something went wrong" });
+    }
 });
 router.post("/", async (req, res) => {
     try {

@@ -1,6 +1,7 @@
 import { clientService } from ".";
 import { Job } from "../models/Job";
 import { NotFoundError } from "../errors/NotFoundError";
+import { calculateTotalOwed } from "../utils/calculateTotalOwed";
 
 export class JobService {
   private jobs: Job[] = [];
@@ -14,7 +15,7 @@ export class JobService {
     return this.jobs.find((job) => job.id == id);
   }
 
-  async getJobByClientId(clientId: number): Promise<Job[]> {
+  async getJobsByClientId(clientId: Number): Promise<Job[]> {
     return this.jobs.filter((job) => job.clientId == clientId);
   }
 
@@ -95,5 +96,15 @@ export class JobService {
     } else {
       job.status = "pending";
     }
+  }
+
+  async calculateClientOwes(clientId: Number): Promise<number> {
+    const jobs = await this.getJobsByClientId(clientId);
+
+    if (jobs.length === 0) {
+      throw new Error("Client not found or does not have any jobs assigned");
+    }
+
+    return calculateTotalOwed(jobs);
   }
 }
