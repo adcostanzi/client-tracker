@@ -23,6 +23,7 @@ For live testing I will be using Postman
 - [TS Code Conventions](https://www.totaltypescript.com/tips/how-to-name-your-types)
 - [Error handling](https://www.w3schools.com/typescript/typescript_error_handling.php)
 - [Recursion](https://codesignal.com/learn/courses/easy-interview-coding-practice-in-typescript/lessons/simple-recursion-in-typescript)
+- [ts-jest](https://kulshekhar.github.io/ts-jest/docs/getting-started/installation)
 
 # Future Work
 

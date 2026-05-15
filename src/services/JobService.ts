@@ -1,4 +1,4 @@
-import { clientService } from ".";
+import { ClientService } from "./ClientService";
 import { Job } from "../models/Job";
 import { NotFoundError } from "../errors/NotFoundError";
 import { calculateTotalOwed } from "../utils/calculateTotalOwed";
@@ -6,6 +6,8 @@ import { calculateTotalOwed } from "../utils/calculateTotalOwed";
 export class JobService {
   private jobs: Job[] = [];
   private nextId = 1;
+
+  constructor(private clientService: ClientService) {}
 
   async getAllJobs(): Promise<Job[]> {
     return this.jobs;
@@ -25,7 +27,7 @@ export class JobService {
     amount: number,
     paidAmount: number,
   ): Promise<Job> {
-    const client = await clientService.getClientById(clientId);
+    const client = await this.clientService.getClientById(clientId);
 
     if (!client) {
       throw new Error("Client not found");
@@ -67,7 +69,7 @@ export class JobService {
     }
 
     if (updates.clientId !== undefined) {
-      const client = await clientService.getClientById(updates.clientId);
+      const client = await this.clientService.getClientById(updates.clientId);
 
       if (!client) {
         throw new Error("Client not found");

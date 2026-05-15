@@ -5,7 +5,8 @@
     "outDir": "dist",
     "strict": true,
     "esModuleInterop": true,
-    "types": ["node"]
+    "types": ["node", "jest"],
+    "isolatedModules": true
   },
-  "include": ["src/**/*"]
+  "include": ["src", "tests"]
 }

@@ -3,4 +3,4 @@ import { JobService } from "./JobService";
 
 export const clientService = new ClientService();
 
-export const jobService = new JobService();
+export const jobService = new JobService(clientService);
