@@ -9,9 +9,11 @@ const jobRoutes_1 = __importDefault(require("./routes/jobRoutes"));
 const app = (0, express_1.default)();
 // This line allows to read JSON from the request body
 app.use(express_1.default.json());
+// Initial message for app initialization
 app.get("/", (req, res) => {
     res.send("Client Tracker API is running...");
 });
+// Routing endpoints
 app.use("/clients", clientRoutes_1.default);
 app.use("/jobs", jobRoutes_1.default);
 exports.default = app;

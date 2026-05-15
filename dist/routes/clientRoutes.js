@@ -3,10 +3,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const services_1 = require("../services");
 const router = (0, express_1.Router)();
+// GET ALL CLIENTS path: /clients/
 router.get("/", async (req, res) => {
     const clients = await services_1.clientService.getAllClients();
     return res.json(clients);
 });
+// GET CLIENT path: /clients/:id
 router.get("/:id", async (req, res) => {
     const clientId = Number(req.params.id);
     const client = await services_1.clientService.getClientById(clientId);
@@ -15,6 +17,7 @@ router.get("/:id", async (req, res) => {
     }
     res.json(client);
 });
+// CREATE CLIENT path: /clients/
 router.post("/", async (req, res) => {
     const { name, phone, email } = req.body;
     try {
@@ -27,6 +30,7 @@ router.post("/", async (req, res) => {
             .json({ message: `Error while trying to create client ${error}` });
     }
 });
+// UPDATE CLIENT path: /clients/:id
 router.patch("/:id", async (req, res) => {
     const { name, phone, email } = req.body;
     const clientId = Number(req.params.id);
@@ -37,7 +41,7 @@ router.patch("/:id", async (req, res) => {
             email,
         });
         if (!updatedClient) {
-            res
+            return res
                 .status(404)
                 .json({ message: `No client with id ${clientId} was found!` });
         }
@@ -49,6 +53,7 @@ router.patch("/:id", async (req, res) => {
             .json({ message: `Error while trying to update client ${error}` });
     }
 });
+// DELETE CLIENT path: /clients/:id
 router.delete("/:id", async (req, res) => {
     const clientId = Number(req.params.id);
     const result = await services_1.clientService.deleteClient(clientId);

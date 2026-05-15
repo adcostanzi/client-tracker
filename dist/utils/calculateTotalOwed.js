@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.calculateTotalOwed = calculateTotalOwed;
 function calculateTotalOwed(jobs, index = 0) {
+    // Recursive function that will return total owed from a job list.
     if (index >= jobs.length) {
         return 0;
     }
