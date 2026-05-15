@@ -4,11 +4,13 @@ import { Client } from "../models/Client";
 
 const router = Router();
 
+// GET ALL CLIENTS path: /clients/
 router.get("/", async (req, res) => {
   const clients = await clientService.getAllClients();
   return res.json(clients);
 });
 
+// GET CLIENT path: /clients/:id
 router.get("/:id", async (req, res) => {
   const clientId = Number(req.params.id);
   const client = await clientService.getClientById(clientId);
@@ -18,6 +20,7 @@ router.get("/:id", async (req, res) => {
   res.json(client);
 });
 
+// CREATE CLIENT path: /clients/
 router.post("/", async (req, res) => {
   const { name, phone, email } = req.body;
 
@@ -32,6 +35,7 @@ router.post("/", async (req, res) => {
   }
 });
 
+// UPDATE CLIENT path: /clients/:id
 router.patch("/:id", async (req, res) => {
   const { name, phone, email } = req.body;
   const clientId = Number(req.params.id);
@@ -44,7 +48,7 @@ router.patch("/:id", async (req, res) => {
     });
 
     if (!updatedClient) {
-      res
+      return res
         .status(404)
         .json({ message: `No client with id ${clientId} was found!` });
     }
@@ -57,6 +61,7 @@ router.patch("/:id", async (req, res) => {
   }
 });
 
+// DELETE CLIENT path: /clients/:id
 router.delete("/:id", async (req, res) => {
   const clientId = Number(req.params.id);
 

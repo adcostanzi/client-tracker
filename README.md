@@ -1,7 +1,12 @@
 # Overview
 
-This project is called "client-tracker". Developed as a CRUD API using typescript, node.js and express framework.
-The goal of this project is to provide a backend only environment for a user to check clients, jobs and amounts paid/owed.
+This project is called "client-tracker". Developed as a CRUD API using typescripts and express framework for routing.
+The goal of this project is to provide a backend-only environment for a user to check clients, jobs and amounts paid/owed.
+
+The project has to main classes with their corresponding endpoints:
+/_Create list of endpoints per class_/
+
+It also has an implementation of recursion to calculate total owed by a client.
 
 [Software Demo Video](http://youtube.link.goes.here)
 
@@ -9,10 +14,11 @@ The goal of this project is to provide a backend only environment for a user to 
 
 Tools used for this project:
 VSCode, node.js, typescript, express.js framework.
-
-For live testing I will be using Postman
-
-{Describe the programming language that you used and any libraries.}
+IDE: VS Cpde
+Frameworks: node.js express for routing
+Programming language: typescript
+Unit Test: jest (tsjest)
+Live Test: Postman
 
 # Useful Websites
 
@@ -27,8 +33,6 @@ For live testing I will be using Postman
 
 # Future Work
 
-{Make a list of things that you need to fix, improve, and add in the future.}
-
-- Item 1
-- Item 2
-- Item 3
+- Implementation of cloud database for data persistance
+- Reminders for customers about payments
+- Addition of invoices, receipts

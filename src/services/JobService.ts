@@ -10,14 +10,17 @@ export class JobService {
   constructor(private clientService: ClientService) {}
 
   async getAllJobs(): Promise<Job[]> {
+    // Returns all jobs
     return this.jobs;
   }
 
   async getJobById(id: number): Promise<Job | undefined> {
+    // Returns Job by given id
     return this.jobs.find((job) => job.id == id);
   }
 
   async getJobsByClientId(clientId: Number): Promise<Job[]> {
+    // Returns Job by given client id
     return this.jobs.filter((job) => job.clientId == clientId);
   }
 
@@ -27,6 +30,7 @@ export class JobService {
     amount: number,
     paidAmount: number,
   ): Promise<Job> {
+    // Create Job, all paramenters are required
     const client = await this.clientService.getClientById(clientId);
 
     if (!client) {
@@ -46,6 +50,7 @@ export class JobService {
   }
 
   async deleteJob(id: number): Promise<boolean> {
+    // Delete a job by given id
     const originalJobsLength = this.jobs.length;
 
     this.jobs = this.jobs.filter((job) => job.id !== id);
@@ -62,6 +67,7 @@ export class JobService {
       paidAmount?: number;
     },
   ): Promise<Job> {
+    // Updates job data, can receive partial or full new data
     const job = this.jobs.find((job) => job.id === id);
 
     if (!job) {
@@ -93,6 +99,7 @@ export class JobService {
   }
 
   async calculateJobStatus(job: Job) {
+    // Calculates if job has been paid and assigns appropriate status to job
     if (job.paidAmount >= job.amount) {
       job.status = "paid";
     } else {
@@ -101,6 +108,7 @@ export class JobService {
   }
 
   async calculateClientOwes(clientId: Number): Promise<number> {
+    // Calculates amount owed of all jobs of a given client
     const jobs = await this.getJobsByClientId(clientId);
 
     if (jobs.length === 0) {
