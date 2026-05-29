@@ -1,5 +1,7 @@
 import admin from "firebase-admin";
 
+// Initial setup of the firestore database with credentials loaded from .env
+
 if (!admin.apps.length) {
   admin.initializeApp({
     credential: admin.credential.cert({

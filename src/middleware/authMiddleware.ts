@@ -9,6 +9,7 @@ export interface AuthenticateRequest extends Request {
 }
 
 export async function authMiddleware(
+  // function responsible for the user authentication, checks if the userToken is valid or returns Unauthorized
   req: AuthenticateRequest,
   res: Response,
   next: NextFunction,

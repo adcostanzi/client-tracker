@@ -3,9 +3,11 @@ import { Client } from "../models/Client";
 import { ClientRepository } from "./ClientRepository";
 
 export class FirestoreClientRepository implements ClientRepository {
+  // Repository that handles the connections from the app to the Firestore db
   private collection = db.collection("clients");
 
   async getAll(): Promise<Client[]> {
+    // Function to retrieve all clients from the collection
     const snapshot = await this.collection.get();
     return snapshot.docs.map((doc) => ({
       id: doc.id,
@@ -14,6 +16,7 @@ export class FirestoreClientRepository implements ClientRepository {
   }
 
   async getById(id: string): Promise<Client | undefined> {
+    // Function to retrieve specific client from the collection by Id
     const doc = await this.collection.doc(id).get();
 
     if (!doc.exists) {
@@ -27,6 +30,7 @@ export class FirestoreClientRepository implements ClientRepository {
   }
 
   async create(client: Omit<Client, "id">): Promise<Client> {
+    // Function to create new client in the db
     const reference = await this.collection.add(client);
 
     return {
@@ -39,6 +43,7 @@ export class FirestoreClientRepository implements ClientRepository {
     id: string,
     updates: Partial<Omit<Client, "id">>,
   ): Promise<Client | undefined> {
+    // Function to update client in the db (can take one or multiple update fields)
     const docRef = this.collection.doc(id);
     const doc = await docRef.get();
 
@@ -56,6 +61,7 @@ export class FirestoreClientRepository implements ClientRepository {
   }
 
   async delete(id: string): Promise<boolean> {
+    // Deletes a specific client by id
     const docRef = this.collection.doc(id);
     const doc = await docRef.get();
 

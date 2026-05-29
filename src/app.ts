@@ -13,9 +13,8 @@ app.get("/", (req, res) => {
   res.send("Client Tracker API is running...");
 });
 
-// Routing endpoints
+// Routing endpoints, note the authentication middleware for both
 app.use("/clients", authMiddleware, clientRoutes);
-
 app.use("/jobs", authMiddleware, jobRoutes);
 
 export default app;
