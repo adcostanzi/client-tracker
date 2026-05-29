@@ -1,8 +1,8 @@
 import { JobStatus } from "./JobStatus";
 
 export interface Job {
-  id: number;
-  clientId: number;
+  id: string;
+  clientId: string;
   description: string;
   amount: number;
   paidAmount: number;

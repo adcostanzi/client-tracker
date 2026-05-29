@@ -10,7 +10,7 @@ router.get("/", async (req, res) => {
 });
 // GET CLIENT path: /clients/:id
 router.get("/:id", async (req, res) => {
-    const clientId = Number(req.params.id);
+    const clientId = req.params.id;
     const client = await services_1.clientService.getClientById(clientId);
     if (!client) {
         return res.status(404).json({ message: "Client not found" });
@@ -33,7 +33,7 @@ router.post("/", async (req, res) => {
 // UPDATE CLIENT path: /clients/:id
 router.patch("/:id", async (req, res) => {
     const { name, phone, email } = req.body;
-    const clientId = Number(req.params.id);
+    const clientId = req.params.id;
     try {
         const updatedClient = await services_1.clientService.updateClient(clientId, {
             name,
@@ -55,7 +55,7 @@ router.patch("/:id", async (req, res) => {
 });
 // DELETE CLIENT path: /clients/:id
 router.delete("/:id", async (req, res) => {
-    const clientId = Number(req.params.id);
+    const clientId = req.params.id;
     const result = await services_1.clientService.deleteClient(clientId);
     if (result) {
         return res.status(200).json({ message: "Client successfully deleted!" });

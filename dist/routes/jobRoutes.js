@@ -11,7 +11,7 @@ router.get("/", async (req, res) => {
 });
 // GET JOB path: /jobs/:id
 router.get("/:id", async (req, res) => {
-    const jobId = Number(req.params.id);
+    const jobId = req.params.id;
     const job = await services_1.jobService.getJobById(jobId);
     if (!job) {
         return res.status(404).json({ message: "Job could not be found!" });
@@ -20,14 +20,14 @@ router.get("/:id", async (req, res) => {
 });
 // GET JOB BY CLIENT ID path: /jobs/client/:id
 router.get("/client/:id", async (req, res) => {
-    const clientId = Number(req.params.id);
+    const clientId = req.params.id;
     const jobs = await services_1.jobService.getJobsByClientId(clientId);
     return res.json(jobs);
 });
 // GET TOTAL OWED BY CLIENT path: /jobs/client/:id/balance
 router.get("/client/:id/balance", async (req, res) => {
     try {
-        const clientId = Number(req.params.id);
+        const clientId = req.params.id;
         const totalOwed = await services_1.jobService.calculateClientOwes(clientId);
         return res.status(200).json({
             clientId: `${clientId}`,
@@ -59,7 +59,7 @@ router.post("/", async (req, res) => {
 router.patch("/:id", async (req, res) => {
     try {
         const { clientId, description, amount, paidAmount } = req.body;
-        const jobId = Number(req.params.id);
+        const jobId = req.params.id;
         const updatedJob = await services_1.jobService.updateJob(jobId, {
             clientId,
             description,
@@ -77,7 +77,7 @@ router.patch("/:id", async (req, res) => {
 });
 // DELETE JOB path: /jobs/:id
 router.delete("/:id", async (req, res) => {
-    const jobId = Number(req.params.id);
+    const jobId = req.params.id;
     try {
         const result = await services_1.jobService.deleteJob(jobId);
         if (result) {

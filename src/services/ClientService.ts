@@ -1,17 +1,17 @@
 import { Client } from "../models/Client";
+import { ClientRepository } from "../repositories/ClientRepository";
 
 export class ClientService {
-  private clients: Client[] = [];
-  private nextId = 1;
+  constructor(private clientRepository: ClientRepository) {}
 
   async getAllClients(): Promise<Client[]> {
     // Returns all clients
-    return this.clients;
+    return this.clientRepository.getAll();
   }
 
-  async getClientById(id: number): Promise<Client | undefined> {
+  async getClientById(id: string): Promise<Client | undefined> {
     // Returns client by given id or undefined
-    return this.clients.find((client) => client.id == id);
+    return this.clientRepository.getById(id);
   }
 
   async createClient(
@@ -19,49 +19,22 @@ export class ClientService {
     phone?: string,
     email?: string,
   ): Promise<Client> {
-    // Creates a new client and pushes it to the client list. Only name is a required field
-    const newClient: Client = {
-      id: this.nextId++,
+    return this.clientRepository.create({
       name,
       phone,
       email,
-    };
-    this.clients.push(newClient);
-    return newClient;
+    });
   }
 
-  async deleteClient(id: number): Promise<boolean> {
+  async deleteClient(id: string): Promise<boolean> {
     // Deletes a client by given id
-    const originalListLength = this.clients.length;
-
-    this.clients = this.clients.filter((client) => client.id !== id);
-
-    return this.clients.length < originalListLength;
+    return this.clientRepository.delete(id);
   }
 
   async updateClient(
-    id: number,
+    id: string,
     updates: { name?: string; phone?: string; email?: string },
   ): Promise<Client | undefined> {
-    // Updates client data, can receive partial or full new data
-    const client = this.clients.find((client) => client.id == id);
-
-    if (!client) {
-      return undefined;
-    }
-
-    if (updates.name !== undefined) {
-      client.name = updates.name;
-    }
-
-    if (updates.phone !== undefined) {
-      client.phone = updates.phone;
-    }
-
-    if (updates.email !== undefined) {
-      client.email = updates.email;
-    }
-
-    return client;
+    return this.clientRepository.update(id, updates);
   }
 }

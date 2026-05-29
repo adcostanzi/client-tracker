@@ -2,30 +2,31 @@ import { ClientService } from "./ClientService";
 import { Job } from "../models/Job";
 import { NotFoundError } from "../errors/NotFoundError";
 import { calculateTotalOwed } from "../utils/calculateTotalOwed";
+import { JobRepository } from "../repositories/JobRepository";
 
 export class JobService {
-  private jobs: Job[] = [];
-  private nextId = 1;
-
-  constructor(private clientService: ClientService) {}
+  constructor(
+    private jobRepository: JobRepository,
+    private clientService: ClientService,
+  ) {}
 
   async getAllJobs(): Promise<Job[]> {
     // Returns all jobs
-    return this.jobs;
+    return this.jobRepository.getAll();
   }
 
-  async getJobById(id: number): Promise<Job | undefined> {
+  async getJobById(id: string): Promise<Job | undefined> {
     // Returns Job by given id
-    return this.jobs.find((job) => job.id == id);
+    return this.jobRepository.getById(id);
   }
 
-  async getJobsByClientId(clientId: Number): Promise<Job[]> {
+  async getJobsByClientId(clientId: string): Promise<Job[]> {
     // Returns Job by given client id
-    return this.jobs.filter((job) => job.clientId == clientId);
+    return this.jobRepository.geyByClientId(clientId);
   }
 
   async createJob(
-    clientId: number,
+    clientId: string,
     description: string,
     amount: number,
     paidAmount: number,
@@ -36,78 +37,42 @@ export class JobService {
     if (!client) {
       throw new Error("Client not found");
     }
-    const newJob: Job = {
-      id: this.nextId++,
+    const status = await this.calculateJobStatus(amount, paidAmount);
+
+    return this.jobRepository.create({
       clientId,
       description,
       amount,
       paidAmount,
-      status: paidAmount >= amount ? "paid" : "pending",
-    };
-
-    this.jobs.push(newJob);
-    return newJob;
+      status,
+    });
   }
 
-  async deleteJob(id: number): Promise<boolean> {
+  async deleteJob(id: string): Promise<boolean> {
     // Delete a job by given id
-    const originalJobsLength = this.jobs.length;
-
-    this.jobs = this.jobs.filter((job) => job.id !== id);
-
-    return this.jobs.length < originalJobsLength;
+    const result = this.jobRepository.delete(id);
+    return result;
   }
 
   async updateJob(
-    id: number,
+    id: string,
     updates: {
-      clientId?: number;
+      clientId?: string;
       description?: string;
       amount?: number;
       paidAmount?: number;
     },
-  ): Promise<Job> {
+  ): Promise<Job | undefined> {
     // Updates job data, can receive partial or full new data
-    const job = this.jobs.find((job) => job.id === id);
-
-    if (!job) {
-      throw new NotFoundError("Job not found");
-    }
-
-    if (updates.clientId !== undefined) {
-      const client = await this.clientService.getClientById(updates.clientId);
-
-      if (!client) {
-        throw new Error("Client not found");
-      }
-
-      job.clientId = updates.clientId;
-    }
-    if (updates.description !== undefined) {
-      job.description = updates.description;
-    }
-    if (updates.amount !== undefined) {
-      job.amount = updates.amount;
-    }
-    if (updates.paidAmount !== undefined) {
-      job.paidAmount = updates.paidAmount;
-    }
-
-    await this.calculateJobStatus(job);
-
-    return job;
+    return this.jobRepository.update(id, updates);
   }
 
-  async calculateJobStatus(job: Job) {
+  async calculateJobStatus(amount: number, paidAmount: number) {
     // Calculates if job has been paid and assigns appropriate status to job
-    if (job.paidAmount >= job.amount) {
-      job.status = "paid";
-    } else {
-      job.status = "pending";
-    }
+    return paidAmount >= amount ? "paid" : "pending";
   }
 
-  async calculateClientOwes(clientId: Number): Promise<number> {
+  async calculateClientOwes(clientId: string): Promise<number> {
     // Calculates amount owed of all jobs of a given client
     const jobs = await this.getJobsByClientId(clientId);
 

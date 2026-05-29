@@ -1,6 +1,7 @@
 import express from "express";
 import clientRoutes from "./routes/clientRoutes";
 import jobRoutes from "./routes/jobRoutes";
+import { authMiddleware } from "./middleware/authMiddleware";
 
 const app = express();
 
@@ -13,8 +14,8 @@ app.get("/", (req, res) => {
 });
 
 // Routing endpoints
-app.use("/clients", clientRoutes);
+app.use("/clients", authMiddleware, clientRoutes);
 
-app.use("/jobs", jobRoutes);
+app.use("/jobs", authMiddleware, jobRoutes);
 
 export default app;
