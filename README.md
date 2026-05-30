@@ -1,36 +1,36 @@
 # Overview
 
-This project is called "client-tracker". Developed as a CRUD API using typescripts and express framework for routing.
-The goal of this project is to provide a backend-only environment for a user to check clients, jobs and amounts paid/owed.
-The project uses lists to store in-memory data as well as asynchronous functions for API communication
-There is also several instances that catch possible exceptions, especially on CRUD operations.
-It also has an implementation of recursion to calculate total owed by a client.
+This is the continuation of the project client-tracker. In this phase I have included an integration with Google Firestore database as well as authentication from the Firebase admin SDK. I have used a repository based architecture to manage the integration with Firestore as well as the possibility of changing to a different db services provider if needed.
 
-[Software Demo Video](https://youtu.be/L8UNsd54WLc)
+The goal of this phase was to learn the concepts of cloud database and its implementation in this API application.
+
+[Software Demo Video](https://youtu.be/esfUL3nyr2w)
+
+# Cloud Database
+
+I am using Firestore database from Google Firebase.
+
+The database has two collections, clients and jobs that will hold the data that previously was being stored in-memory.
+To check the structure of each document in the collections please refer to client-tracker/src/models
 
 # Development Environment
 
 Tools used for this project:
 VSCode, node.js, typescript, express.js framework.
-IDE: VS Cpde
+IDE: VS Code
 Frameworks: node.js express for routing
 Programming language: typescript
-Unit Test: jest (tsjest)
-Live Test: Postman
+Test: Postman
+Cloud Storage: firebase-admin library
 
 # Useful Websites
 
-- [Initial Set up](https://www.youtube.com/watch?v=DQgieYfWKwM)
-- [VSCode Documentation](https://code.visualstudio.com/docs/typescript/typescript-tutorial)
-- [Official Documentation](https://www.typescriptlang.org/docs/)
-- [Express documentation](https://expressjs.com/)
-- [TS Code Conventions](https://www.totaltypescript.com/tips/how-to-name-your-types)
-- [Error handling](https://www.w3schools.com/typescript/typescript_error_handling.php)
-- [Recursion](https://codesignal.com/learn/courses/easy-interview-coding-practice-in-typescript/lessons/simple-recursion-in-typescript)
-- [ts-jest](https://kulshekhar.github.io/ts-jest/docs/getting-started/installation)
+- [Google Firebase](https://firebase.google.com/docs/firestore/data-model)
+- [FireStore setup](https://firebase.google.com/docs/admin/setup)
+- [Repository Architecture](https://medium.com/@hthabang23/understanding-repository-architecture-a-comprehensive-overview-ee0ac55bce4f)
 
 # Future Work
 
-- Implementation of cloud database for data persistance
-- Addition of payments, invoices, receipts
-- Reminders for customers about payments
+- Replace deprecated unit testing for integration testing
+- Implement a UI
+- Prepare to host application
