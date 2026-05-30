@@ -4,7 +4,7 @@ This is the continuation of the project client-tracker. In this phase I have inc
 
 The goal of this phase was to learn the concepts of cloud database and its implementation in this API application.
 
-[Software Demo Video](http://youtube.link.goes.here)
+[Software Demo Video](https://youtu.be/esfUL3nyr2w)
 
 # Cloud Database
 
