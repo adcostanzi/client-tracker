@@ -7,6 +7,7 @@ export interface JobRepository {
   getAll(): Promise<Job[]>;
   getById(id: string): Promise<Job | undefined>;
   geyByClientId(clientId: string): Promise<Job[]>;
+  deleteByClientId(clientId: string): Promise<number>;
   create(job: Omit<Job, "id">): Promise<Job>;
   update(
     id: string,

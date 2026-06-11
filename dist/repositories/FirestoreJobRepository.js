@@ -34,6 +34,20 @@ class FirestoreJobRepository {
             ...doc.data(),
         }));
     }
+    async deleteByClientId(clientId) {
+        // Deletes every job belonging to a client (used for cascade on client delete)
+        const snapshot = await this.collection
+            .where("clientId", "==", clientId)
+            .get();
+        if (snapshot.empty) {
+            return 0;
+        }
+        // A batch deletes all matching docs in a single atomic write
+        const batch = firebaseAdmin_1.db.batch();
+        snapshot.docs.forEach((doc) => batch.delete(doc.ref));
+        await batch.commit();
+        return snapshot.size;
+    }
     async create(job) {
         // Creates a job in the collection
         const reference = await this.collection.add(job);

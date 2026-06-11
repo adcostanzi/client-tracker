@@ -7,6 +7,6 @@ const clientRepository = new FirestoreClientRepository();
 const jobRepository = new FirestoreJobRepository();
 
 // Initialization of services in the index to work under one instance
-export const clientService = new ClientService(clientRepository);
+export const clientService = new ClientService(clientRepository, jobRepository);
 
 export const jobService = new JobService(jobRepository, clientService);

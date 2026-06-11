@@ -3,8 +3,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ClientService = void 0;
 class ClientService {
     clientRepository;
-    constructor(clientRepository) {
+    jobRepository;
+    constructor(clientRepository, jobRepository) {
         this.clientRepository = clientRepository;
+        this.jobRepository = jobRepository;
     }
     async getAllClients() {
         // Returns all clients
@@ -23,7 +25,13 @@ class ClientService {
     }
     async deleteClient(id) {
         // Deletes a client by given id
-        return this.clientRepository.delete(id);
+        const deleted = await this.clientRepository.delete(id);
+        if (!deleted) {
+            return false;
+        }
+        // Cascade: remove every job linked to this client
+        await this.jobRepository.deleteByClientId(id);
+        return true;
     }
     async updateClient(id, updates) {
         return this.clientRepository.update(id, updates);
