@@ -43,7 +43,20 @@ class JobService {
     }
     async updateJob(id, updates) {
         // Updates job data, can receive partial or full new data
-        return this.jobRepository.update(id, updates);
+        const finalUpdates = { ...updates };
+        // If amount or paidAmount changed, recalculate the status. Merge with the
+        // existing job so a partial update (e.g. only paidAmount) still computes
+        // against the correct values.
+        if (updates.amount !== undefined || updates.paidAmount !== undefined) {
+            const existing = await this.jobRepository.getById(id);
+            if (!existing) {
+                return undefined;
+            }
+            const amount = updates.amount ?? existing.amount;
+            const paidAmount = updates.paidAmount ?? existing.paidAmount;
+            finalUpdates.status = await this.calculateJobStatus(amount, paidAmount);
+        }
+        return this.jobRepository.update(id, finalUpdates);
     }
     async calculateJobStatus(amount, paidAmount) {
         // Calculates if job has been paid and assigns appropriate status to job
@@ -53,7 +66,7 @@ class JobService {
         // Calculates amount owed of all jobs of a given client
         const jobs = await this.getJobsByClientId(clientId);
         if (jobs.length === 0) {
-            throw new Error("Client not found or does not have any jobs assigned");
+            return 0;
         }
         return (0, calculateTotalOwed_1.calculateTotalOwed)(jobs);
     }

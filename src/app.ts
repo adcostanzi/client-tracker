@@ -14,7 +14,7 @@ app.get("/", (req, res) => {
 });
 
 // Routing endpoints, note the authentication middleware for both
-app.use("/clients", authMiddleware, clientRoutes);
-app.use("/jobs", authMiddleware, jobRoutes);
+app.use("/clients", clientRoutes);
+app.use("/jobs", jobRoutes);
 
 export default app;

@@ -64,7 +64,25 @@ export class JobService {
     },
   ): Promise<Job | undefined> {
     // Updates job data, can receive partial or full new data
-    return this.jobRepository.update(id, updates);
+    const finalUpdates: Partial<Omit<Job, "id">> = { ...updates };
+
+    // If amount or paidAmount changed, recalculate the status. Merge with the
+    // existing job so a partial update (e.g. only paidAmount) still computes
+    // against the correct values.
+    if (updates.amount !== undefined || updates.paidAmount !== undefined) {
+      const existing = await this.jobRepository.getById(id);
+
+      if (!existing) {
+        return undefined;
+      }
+
+      const amount = updates.amount ?? existing.amount;
+      const paidAmount = updates.paidAmount ?? existing.paidAmount;
+
+      finalUpdates.status = await this.calculateJobStatus(amount, paidAmount);
+    }
+
+    return this.jobRepository.update(id, finalUpdates);
   }
 
   async calculateJobStatus(amount: number, paidAmount: number) {
@@ -77,7 +95,7 @@ export class JobService {
     const jobs = await this.getJobsByClientId(clientId);
 
     if (jobs.length === 0) {
-      throw new Error("Client not found or does not have any jobs assigned");
+      return 0;
     }
 
     return calculateTotalOwed(jobs);

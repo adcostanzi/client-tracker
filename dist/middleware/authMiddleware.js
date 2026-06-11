@@ -5,7 +5,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.authMiddleware = authMiddleware;
 const firebase_admin_1 = __importDefault(require("firebase-admin"));
-async function authMiddleware(req, res, next) {
+async function authMiddleware(
+// function responsible for the user authentication, checks if the userToken is valid or returns Unauthorized
+req, res, next) {
     const authorizationHeader = req.headers.authorization;
     if (!authorizationHeader || !authorizationHeader.startsWith("Bearer")) {
         return res.status(401).json({
